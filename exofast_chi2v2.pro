@@ -525,12 +525,15 @@ endif
 
 ;; apply MIST penalty to constrain stellar parameters
 if ss.mist then begin
-   if keyword_set(psname) then epsname = psname+'.mist.eps'
+   if keyword_set(psname) then begin
+       epsname = psname+'.mist.eps'
+       trackname = psname+'.mist.track'
+   endif
    
    mistchi2 = massradius_mist(ss.star.eep.value, ss.star.mstar.value, ss.star.initfeh.value, $
                               ss.star.age.value, ss.star.teff.value,$
                               ss.star.rstar.value, ss.star.feh.value, debug=ss.debug, $
-                              epsname=epsname, gravitysun=ss.constants.gravitysun, $
+                              epsname=epsname, trackfile=trackname, gravitysun=ss.constants.gravitysun, $
                               fitage=ss.star.age.fit, ageweight=ageweight, logname=ss.logname, verbose=ss.verbose)
    
    chi2 += mistchi2
@@ -712,7 +715,7 @@ for j=0, ss.ntel-1 do begin
 
    if keyword_set(psname) then begin
       base = file_dirname(psname) + path_sep() + file_basename(psname,'.model')
-      exofast_forprint, rv.bjd, rv.rv - modelrv, rv.err, format='(f0.8,x,f0.6,x,f0.6)', textout=base + '.residuals.telescope_' + strtrim(j,2) + '.txt', /nocomment,/silent
+      exofast_forprint, rv.bjd, rv.rv - modelrv, sqrt(rv.err^2 + ss.telescope[j].jittervar.value), format='(f0.8,x,f0.6,x,f0.6)', textout=base + '.residuals.telescope_' + strtrim(j,2) + '.txt', /nocomment,/silent
       exofast_forprint, rv.bjd, modelrv, format='(f0.8,x,f0.6)', textout=base + '.model.telescope_' + strtrim(j,2) + '.txt', /nocomment,/silent
    endif
 

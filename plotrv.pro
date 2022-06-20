@@ -205,7 +205,7 @@ for i=0, ss.nplanets-1 do begin
       allprettymodel += prettymodel
 
       if n_elements(psname) eq 1 then begin
-         base = file_dirname(psname) + path_sep() + file_basename(psname,'.model')
+         base = file_dirname(psname) + path_sep() + file_basename(psname,'.ps')
          exofast_forprint, prettytime, prettymodel, textout=base+'.prettymodelrv.planet.' + strtrim(i,2) + '.txt', format='(f0.10,x,f0.10)'
       endif
    endelse 
@@ -299,6 +299,7 @@ for i=0, ss.nplanets-1 do begin
       plotsym, symbols[j mod nsymbols], symsize, fill=fills[j mod nfills], color=colors[j mod ncolors]
       oploterr, time, rv.residuals, err, 8
    endfor
+
 
    ;; GDL can't do multi-page plots
    if runninggdl then begin
