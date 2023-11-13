@@ -319,7 +319,7 @@ if not keyword_set(psname) then begin
 endif else begin
    trend = (prettytime-t0)*ss.star.slope.value[ndx] + (prettytime-t0)^2*ss.star.quad.value[ndx]
    allprettymodel += trend
-   exofast_forprint, prettytime, prettymodel, textout=base+'.prettymodelrv.trend.txt', format='(f0.10,x,f0.10)'
+   exofast_forprint, prettytime, prettymodel, trend, textout=base+'.prettymodelrv.trend.txt', format='(f0.10,x,f0.10,x,f0.10)'
 endelse
 
 if n_elements(yrange) eq 0 then begin
