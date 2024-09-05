@@ -828,6 +828,14 @@ if double(!version.release) ge 6.4d0 and ~lmgr(/vm) and ~lmgr(/runtime) and ~run
 logname = prefix + 'log'
 file_delete, logname, /allow_nonexistent
 
+if keyword_set(skiptt) then begin
+	printandlog, "SKIPTT keyword set.", logname
+endif else begin
+	printandlog, "SKIPTT keyword not set.", logname
+endelse
+
+
+
 
 exofast_path = getenv('EXOFAST_PATH')
 ;if (strpos(exofast_path,'//') ne -1) or 
@@ -1264,7 +1272,8 @@ endelse
 exofast_latextab2, mcmcss, caption=caption, label=label,texfile=texfile
 exofast_plotchains, mcmcss, chainfile=chainfile, logname=logname
 
-if (keyword_set(mcmcss.ttvs) or ~keyword_set(skiptt)) and mcmcss.ntran ne 0 then begin
+;;if (keyword_set(mcmcss.ttvs) or ~keyword_set(skiptt)) and mcmcss.ntran ne 0 then begin
+if (~keyword_set(skiptt)) and mcmcss.ntran ne 0 then begin
    printandlog, 'The fit is done and can be interrupted without losing any results', logname
    printandlog, 'Now generating a table of the numerically solved times of ', logname
    printandlog, 'minimum projected separation, depth, and impact parameters for',logname
