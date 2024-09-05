@@ -777,6 +777,12 @@ basename = file_basename(prefix)
 logname = prefix + 'log'
 file_delete, logname, /allow_nonexistent
 
+if keyword_set(skiptt) then begin
+	printandlog, "SKIPTT keyword set.", logname
+endif else begin
+	printandlog, "SKIPTT keyword not set.", logname
+endelse
+
 ;; name of the chi square function
 chi2func = 'exofast_chi2v2'
 
@@ -1223,7 +1229,8 @@ endelse
 exofast_latextab2, mcmcss, caption=caption, label=label,texfile=texfile
 exofast_plotchains, mcmcss, chainfile=chainfile, logname=logname
 
-if (keyword_set(mcmcss.ttvs) or ~keyword_set(skiptt)) and mcmcss.ntran ne 0 then begin
+;; if (keyword_set(mcmcss.ttvs) or ~keyword_set(skiptt)) and mcmcss.ntran ne 0 then begin
+if (~keyword_set(skiptt)) and mcmcss.ntran ne 0 then begin
    printandlog, 'The fit is done and can be interrupted without losing any results', logname
    printandlog, 'Now generating a table of the numerically solved times of ', logname
    printandlog, 'minimum projected separation, depth, and impact parameters for',logname
