@@ -1308,6 +1308,14 @@ if double(!version.release) ge 6.4d0 and ~lmgr(/vm) and ~lmgr(/runtime) and ~run
 logname = prefix + 'log'
 file_delete, logname, /allow_nonexistent
 
+if keyword_set(skiptt) then begin
+	printandlog, "SKIPTT keyword set.", logname
+endif else begin
+	printandlog, "SKIPTT keyword not set.", logname
+endelse
+
+
+
 
 exofast_path = getenv('EXOFAST_PATH')
 ;if (strpos(exofast_path,'//') ne -1) or 
