@@ -338,7 +338,7 @@ if keyword_set(debug) or keyword_set(epsname) or n_elements(pngname) ne 0 then b
    mistageiso = mistageiso[good]
 
    if n_elements(trackfile) ne 0 then $
-      exofast_forprint, mistteffiso, mistrstariso, mistageiso, format='(f0.5,x,f0.5,x,f0.5)', comment='#teff, rstar, age', textout=trackfile
+      exofast_forprint, mistteffiso, mistrstariso, mistageiso, eepplot, format='(f0.5,x,f0.5,x,f0.5,x,f0.5)', comment='#teff, rstar, age, eep', textout=trackfile
 
    ;; make a publication-ready plot of the YY track -- Teff vs logg
    loggplottrack =  alog10(mstar/(mistrstariso^2)*gravitysun)
@@ -353,10 +353,10 @@ if keyword_set(debug) or keyword_set(epsname) or n_elements(pngname) ne 0 then b
    xmin=max([teffplottrack[use],teff*1.1, teff*0.9],min=xmax) ;; plot range backwards
    ymax = min([loggplot,3,5,loggplottrack[use]],max=ymin)     ;; plot range backwards
 
-   if finite(range[0]) then xmin = range[0]
-   if finite(range[1]) then xmax = range[1]
-   if finite(range[2]) then ymin = range[2]
-   if finite(range[3]) then ymax = range[3]
+   ; if finite(range[0]) then xmin = range[0]
+   ; if finite(range[1]) then xmax = range[1]
+   ; if finite(range[2]) then ymin = range[2]
+   ; if finite(range[3]) then ymax = range[3]
 
    ;; increase xrange so there are 4 equally spaced ticks that land on 100s
    xticks = 3
