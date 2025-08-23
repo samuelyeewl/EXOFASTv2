@@ -972,7 +972,7 @@ endif
 
 memrequired = double(ss.nchains)*double(maxsteps)*npars*8d0/(1024d0^3)
 printandlog, 'Fit will require ' + strtrim(memrequired,2) + ' GB of RAM for the final structure', logname
-if memrequired gt 8d0 then begin
+if memrequired gt 12d0 then begin
    printandlog, 'WARNING: this likely exceeds your available RAM and may crash after the end of a very long run. You likely want to reduce MAXSTEPS and increase NTHIN by the same factor. If you would like to proceed anyway, type ".con" to continue', logname
    if ~lmgr(/vm) then stop
 endif
@@ -1229,8 +1229,8 @@ endelse
 exofast_latextab2, mcmcss, caption=caption, label=label,texfile=texfile
 exofast_plotchains, mcmcss, chainfile=chainfile, logname=logname
 
-;; if (keyword_set(mcmcss.ttvs) or ~keyword_set(skiptt)) and mcmcss.ntran ne 0 then begin
-if (~keyword_set(skiptt)) and mcmcss.ntran ne 0 then begin
+if (total(mcmcss.ttvs) gt 0 or ~keyword_set(skiptt)) and mcmcss.ntran ne 0 then begin
+;; if (~keyword_set(skiptt)) and mcmcss.ntran ne 0 then begin
    printandlog, 'The fit is done and can be interrupted without losing any results', logname
    printandlog, 'Now generating a table of the numerically solved times of ', logname
    printandlog, 'minimum projected separation, depth, and impact parameters for',logname
