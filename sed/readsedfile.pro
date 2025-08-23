@@ -60,7 +60,8 @@ for i=0L, nlines-1 do begin
    endif
 
    ;; if not recognized, download it
-   if not file_test(idlfile) and keyword_set(download_new) then getfilter, sedbands[i]
+   ;; if not file_test(idlfile) and keyword_set(download_new) then getfilter, sedbands[i]
+   if not file_test(idlfile) then getfilter, sedbands[i]
 
    ;; if still not recognized, skip it
    if not file_test(idlfile) then begin
