@@ -348,20 +348,27 @@ if keyword_set(debug) or keyword_set(psname) eq 1 then begin
       relative = where(blend[i,*] eq -1)
       if relative[0] eq -1 then begin
          oplot, [weff[i]],[alog10(modelfluxpos[i])], psym=8 ;; blue points
+         ;; In the following lines, modelfluxneg is unnecessary since these are not relative photometry
          residuals[i] = (flux[i] - (modelfluxpos[i]-modelfluxneg[i]))/errflux[i]
          res_errhi[i] = (flux[i] - (modelfluxpos[i]-modelfluxneg[i])+errflux[i])/errflux[i]
          res_errlo[i] = (flux[i] - (modelfluxpos[i]-modelfluxneg[i])-errflux[i])/errflux[i]
       endif else begin
          ;; this is relative photometry
          ;; only plot the positive stars' model flux
-         oplot, [weff[i]],[alog10(modelfluxpos[i])],psym=8 ;; blue points
+         ;; oplot, [weff[i]],[alog10(modelfluxpos[i])],psym=8 ;; blue points
+         ;; only plot the negative stars' model flux
+         oplot, [weff[i]],[alog10(modelfluxneg[i])],psym=8 ;; blue points
+         
 
          ;; pos = neg + deltamag
 
          ;; overwrite global flux value of relative fluxes with neg star flux + deltamag
          ;; add the model for the positive one 
          ;; to plot relative data on an absolute scale
-         flux[i] = modelfluxneg[i]*10^(-0.4*(mag[i])) ;; equal to positive stars' flux
+         ;; flux[i] = modelfluxneg[i]*10^(-0.4*(mag[i])) ;; equal to positive stars' flux
+         ;; errflux[i] = flux[i]*alog(10d0)/2.5d0*errmag[i]
+         ;; Show negative star's flux
+         flux[i] = modelfluxpos[i]*10^(-0.4*(-mag[i])) ;; equal to negative stars' flux
          errflux[i] = flux[i]*alog(10d0)/2.5d0*errmag[i]
 
          ;; gross. There has to be a more elegant way...
@@ -479,11 +486,29 @@ if keyword_set(debug) or keyword_set(psname) eq 1 then begin
       residualfilename = file_dirname(psname) + path_sep() + 'modelfiles' + path_sep() + file_basename(psname,'.eps') + '.residuals.txt'
       
       startxt = strarr(nbands)
-      for i=0L, nbands-1 do startxt[i] = strjoin(strtrim(where(blend[i,*]),2),',')
-      
-;      exofast_forprint, sedbands, weff, widtheff, sed, errflux, flux, flux-flux,startxt, textout=residualfilename, $
-;                        comment='# Filtername, Center wavelength (um), half bandpass (um), flux, error, flux, residuals (erg/s/cm^2), star indices', $
-;                        format='(a20,x,f0.6,x,f0.6,x,e0.6,x,e0.6,x,e0.6,x,e0.6,x,a)'
+      ;; for i=0L, nbands-1 do startxt[i] = strjoin(strtrim(where(blend[i,*]),2),',')
+      ;; Updated startxt generation to account for negative indices
+      for i=0L, nbands-1 do begin
+          posndx = where(blend[i,*] eq 1, poscount)
+          negndx = where(blend[i,*] eq -1, negcount)
+          if poscount gt 0 then pos_str = strjoin(strtrim(posndx, 2), ',') else pos_str = ''
+          if negcount gt 0 then neg_str = strjoin(strtrim(negndx, 2), ',') else neg_str = ''
+
+          ; Combine the results
+          if poscount gt 0 and negcount gt 0 then $
+              startxt[i] = pos_str + '-' + neg_str $
+          else if poscount gt 0 then $
+              startxt[i] = pos_str $
+          else if negcount gt 0 then $
+              startxt[i] = '-' + neg_str $
+          else $
+              startxt[i] = '' ; No 1 or -1 elements, assign an empty string
+          indices = where(blend[i,*] ne 0, count) ; Get non-zero indices and count
+      endfor
+
+      exofast_forprint, sedbands, weff, widtheff, flux, errflux, flux, flux-flux,startxt, textout=residualfilename, $
+                        comment='# Filtername, Center wavelength (um), half bandpass (um), flux, error, flux, residuals (erg/s/cm^2), star indices', $
+                        format='(a20,x,f0.6,x,f0.6,x,e0.6,x,e0.6,x,e0.6,x,e0.6,x,a)'
       
    endif
    set_plot, mydevice

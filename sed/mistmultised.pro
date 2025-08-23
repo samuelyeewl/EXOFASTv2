@@ -464,7 +464,25 @@ if keyword_set(debug) or keyword_set(psname) eq 1 then begin
       residualfilename = file_dirname(psname) + path_sep() + 'modelfiles' + path_sep() + file_basename(psname,'.eps') + '.residuals.txt'
 
       startxt = strarr(nbands)
-      for i=0L, nbands-1 do startxt[i] = strjoin(strtrim(where(blend[i,*]),2),',')
+      ;; for i=0L, nbands-1 do startxt[i] = strjoin(strtrim(where(blend[i,*]),2),',')
+      ;; Updated startxt generation to account for negative indices
+      for i=0L, nbands-1 do begin
+          posndx = where(blend[i,*] eq 1, poscount)
+          negndx = where(blend[i,*] eq -1, negcount)
+          if poscount gt 0 then pos_str = strjoin(strtrim(posndx, 2), ',') else pos_str = ''
+          if negcount gt 0 then neg_str = strjoin(strtrim(negndx, 2), ',') else neg_str = ''
+
+          ; Combine the results
+          if poscount gt 0 and negcount gt 0 then $
+              startxt[i] = pos_str + '-' + neg_str $
+          else if poscount gt 0 then $
+              startxt[i] = pos_str $
+          else if negcount gt 0 then $
+              startxt[i] = '-' + neg_str $
+          else $
+              startxt[i] = '' ; No 1 or -1 elements, assign an empty string
+          indices = where(blend[i,*] ne 0, count) ; Get non-zero indices and count
+      endfor
 
       exofast_forprint, filterprops.name, wp, widthhm, flux, fluxerr, modelblendflux, flux-modelblendflux,startxt, textout=residualfilename, $
                         comment='# Filtername, Center wavelength (um), half bandpass (um), flux, error, modelflux, residuals (erg/s/cm^2), star indices', $
