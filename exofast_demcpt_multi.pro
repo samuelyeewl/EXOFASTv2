@@ -798,9 +798,10 @@ if runtime gt 60 then begin
 endif
 
 runtime = strtrim(string(runtime,format='(f100.2)'),2)
+nstop = strtrim(string(nstop,format='(i0)'),2)
 
-format = '("EXOFAST_DEMC: done in ",a,a,"; accepted ",a,"% of trial steps")'
-printandlog, string(runtime, units, acceptancerate, format=format), logname
+format = '("EXOFAST_DEMC: done in ",a,a,"; accepted ",a,"% of trial steps; total ",a," steps saved")'
+printandlog, string(runtime, units, acceptancerate, nstop, format=format), logname
 
 end
 
