@@ -1536,6 +1536,8 @@ bestchi2 = call_function(chi2func,best,modelrv=modelrv,modelflux=modelflux, psna
 printandlog, 'The best loglike found by AMOEBA was ' + strtrim(-bestchi2/2d0,2), logname
 printandlog, 'It should only be compared against the loglike of the same model with different starting points', logname
 
+if keyword_set(bestonly) then return
+
 ;; initialize the threads
 if nthreads gt 1 then begin
    printandlog, 'Initializing ' + strtrim(nthreads,2) + ' threads', logname
@@ -1666,6 +1668,9 @@ if not keyword_set(bestonly) then begin
       printandlog, 'MCMC Failed to find a stepping scale. This usually means one or more parameters are unconstrained by the data or priors.', logname
    endif
 
+   mem = (MEMORY(/HIGHWATER)*IDLUNIT.byte).to('GB')
+   printandlog, 'Maximum memory used by MCMC was ' + (strtrim(mem.quantity, 2)).substring(0, 5) + ' GB', logname
+
    bad = where(tz lt mintz or gelmanrubin gt maxgr,nbad)
    if bad[0] ne -1 then begin
       printandlog, 'WARNING: The Gelman-Rubin statistic indicates ' + $
@@ -1704,6 +1709,9 @@ endif else begin
    pars = reform(best[tofit],n_elements(tofit),1)
    bestndx = 0
 endelse
+
+mem = (MEMORY(/HIGHWATER)*IDLUNIT.byte).to('GB')
+printandlog, 'Maximum memory used after synthesizing was ' + (strtrim(mem.quantity, 2)).substring(0, 5) + ' GB', logname
 
 ;; generate the model fit from the best MCMC values, not AMOEBA
 bestamoeba = best
@@ -1780,7 +1788,13 @@ mcmcss.burnndx = burnndx
 *(mcmcss.goodchains) = goodchains
 *(mcmcss.chi2) = chi2
 
+mem = (MEMORY(/HIGHWATER)*IDLUNIT.byte).to('GB')
+printandlog, 'Maximum memory used after mkss was ' + (strtrim(mem.quantity, 2)).substring(0, 5) + ' GB', logname
+
 pars2str, pars, mcmcss
+
+mem = (MEMORY(/HIGHWATER)*IDLUNIT.byte).to('GB')
+printandlog, 'Maximum memory used after pars2str was ' + (strtrim(mem.quantity, 2)).substring(0, 5) + ' GB', logname
 
 ;; populate residuals for the mcmcss file
 for i=0L, mcmcss.ntran-1 do $
@@ -1790,6 +1804,9 @@ for i=0L, mcmcss.ntel-1 do $
    
 ;; derive all parameters
 derivepars, mcmcss, logname=logname
+
+mem = (MEMORY(/HIGHWATER)*IDLUNIT.byte).to('GB')
+printandlog, 'Maximum memory used after remaking structure was ' + (strtrim(mem.quantity, 2)).substring(0, 5) + ' GB', logname
 
 spawn, 'git -C $EXOFAST_PATH rev-parse --short HEAD', output, stderr
 if output[0] ne '' then versiontxt = ", created using EXOFASTv2 commit number " + output[0] $

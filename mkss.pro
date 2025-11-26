@@ -710,7 +710,7 @@ if tranpath eq '' and ntranfit ne 0 then begin
 endif
 
 ;; each parameter is a structure, as defined here
-parameter = create_struct('value',value,$     ;; its numerical value
+parameter = create_struct('value',temporary(value),$     ;; its numerical value
                           'prior',0d0,$       ;; its prior value
                           'priorwidth',!values.d_infinity,$ ;; its prior width (infinity => no constraint)
                           'lowerbound',-!values.d_infinity,$ ;; values lower than this have zero likelihood
@@ -2063,39 +2063,39 @@ spzeropoint.derive = 0
 
 ;; for each star
 columnlabels = ''
-star = create_struct(mstar.label,mstar,$
-                     rstar.label,rstar,$
-                     rstarsed.label,rstarsed,$
-                     lstar.label,lstar,$
-                     fbol.label,fbol,$
-                     rhostar.label,rhostar,$
-                     logg.label,logg,$
-                     teff.label,teff,$
-                     teffsed.label,teffsed,$
-                     feh.label,feh,$
-                     fehsed.label,fehsed,$
-                     initfeh.label,initfeh,$
-                     age.label,age,$
-                     eep.label,eep,$
-                     logmstar.label,logmstar,$
-                     absks.label,absks,$
-                     appks.label,appks,$
-                     vsini.label,vsini,$
-                     vline.label,vline,$                    
-                     Av.label,Av,$
-                     alpha.label,alpha,$
-;                     Ma.label,Ma,$
-;                     Mv.label,Mv,$
-                     errscale.label,errscale,$
-                     ra.label,ra,$       ;; astrometry
-                     dec.label,dec,$     ;; astrometry
-                     pmra.label,pmra,$   ;; astrometry
-                     pmdec.label,pmdec,$ ;; astrometry
-                     rvabs.label,rvabs,$ ;; astrometry
-                     parallax.label,parallax,$
-                     distance.label,distance,$
-                     slope.label,slope,$
-                     quad.label,quad,$
+star = create_struct(mstar.label,temporary(mstar),$
+                     rstar.label,temporary(rstar),$
+                     rstarsed.label,temporary(rstarsed),$
+                     lstar.label,temporary(lstar),$
+                     fbol.label,temporary(fbol),$
+                     rhostar.label,temporary(rhostar),$
+                     logg.label,temporary(logg),$
+                     teff.label,temporary(teff),$
+                     teffsed.label,temporary(teffsed),$
+                     feh.label,temporary(feh),$
+                     fehsed.label,temporary(fehsed),$
+                     initfeh.label,temporary(initfeh),$
+                     age.label,temporary(age),$
+                     eep.label,temporary(eep),$
+                     logmstar.label,temporary(logmstar),$
+                     absks.label,temporary(absks),$
+                     appks.label,temporary(appks),$
+                     vsini.label,temporary(vsini),$
+                     vline.label,temporary(vline),$                    
+                     Av.label,temporary(Av),$
+                     alpha.label,temporary(alpha),$
+;                     Ma.label,temporary(Ma),$
+;                     Mv.label,temporary(Mv),$
+                     errscale.label,temporary(errscale),$
+                     ra.label,temporary(ra),$       ;; astrometry
+                     dec.label,temporary(dec),$     ;; astrometry
+                     pmra.label,temporary(pmra),$   ;; astrometry
+                     pmdec.label,temporary(pmdec),$ ;; astrometry
+                     rvabs.label,temporary(rvabs),$ ;; astrometry
+                     parallax.label,temporary(parallax),$
+                     distance.label,temporary(distance),$
+                     slope.label,temporary(slope),$
+                     quad.label,temporary(quad),$
                      'rootlabel','Stellar Parameters:',$
                      'columnlabels',columnlabels,$
                      'label','')
@@ -2113,38 +2113,38 @@ ndata = 0L
 ;if n_elements(nvalues) ne 0 then stop
 
 planet = create_struct($
-         period.label,period,$    ;; fundamental (most interesting) parameters
-         rp.label,rp,$
-         rpearth.label,rpearth,$
-         mp.label,mp,$
-         mpsun.label,mpsun,$
-         logmp.label,logmp,$
-         mpearth.label,mpearth,$
-         tco.label,tco,$
-         tc.label,tc,$
-         tt.label,tt,$
-         t0.label,t0,$
-         a.label,a,$              
-         inc.label,inc,$
-         ideg.label,ideg,$
-         e.label,e,$
-         omega.label,omega,$
-         omegadeg.label,omegadeg,$
-         lsinw.label,lsinw,$
-         lsinw2.label,lsinw2,$
-         lcosw.label,lcosw,$
-         omegagr.label,omegagr,$
-         bigomega.label,bigomega,$ ;; for astrometry
-         bigomegadeg.label,bigomegadeg,$
-         lsinbigomega.label,lsinbigomega,$
-         lcosbigomega.label,lcosbigomega,$
-         teq.label,teq,$
-         tcirc.label, tcirc,$
-         K.label,k,$              ;; RV parameters
-         logK.label,logk,$              ;; RV parameters
-         p.label,p,$              ;; Primary Transit parameters
-         ar.label,ar,$
-         delta.label,delta)
+         period.label,temporary(period),$    ;; fundamental (most interesting) parameters
+         rp.label,temporary(rp),$
+         rpearth.label,temporary(rpearth),$
+         mp.label,temporary(mp),$
+         mpsun.label,temporary(mpsun),$
+         logmp.label,temporary(logmp),$
+         mpearth.label,temporary(mpearth),$
+         tco.label,temporary(tco),$
+         tc.label,temporary(tc),$
+         tt.label,temporary(tt),$
+         t0.label,temporary(t0),$
+         a.label,temporary(a),$              
+         inc.label,temporary(inc),$
+         ideg.label,temporary(ideg),$
+         e.label,temporary(e),$
+         omega.label,temporary(omega),$
+         omegadeg.label,temporary(omegadeg),$
+         lsinw.label,temporary(lsinw),$
+         lsinw2.label,temporary(lsinw2),$
+         lcosw.label,temporary(lcosw),$
+         omegagr.label,temporary(omegagr),$
+         bigomega.label,temporary(bigomega),$ ;; for astrometry
+         bigomegadeg.label,temporary(bigomegadeg),$
+         lsinbigomega.label,temporary(lsinbigomega),$
+         lcosbigomega.label,temporary(lcosbigomega),$
+         teq.label,temporary(teq),$
+         tcirc.label,temporary(tcirc),$
+         K.label,temporary(k),$              ;; RV parameters
+         logK.label,temporary(logk),$              ;; RV parameters
+         p.label,temporary(p),$              ;; Primary Transit parameters
+         ar.label,temporary(ar),$
+         delta.label,temporary(delta))
 
 ;; compute a depth for each observed band
 for i=0L, nband-1 do begin
@@ -2158,63 +2158,63 @@ for i=0L, nband-1 do begin
    depth.label = 'depth_' + bands[i]
    depth.unit = 'frac'
    if nplanets eq 0 then depth.derive = 0
-   planet = create_struct(planet, depth.label, depth)
+   planet = create_struct(planet, depth.label, temporary(depth))
 endfor
 
 planet = create_struct($
          planet,$
-         tau.label,tau,$
-         t14.label,t14,$
-         tfwhm.label,tfwhm,$
-         b.label,b,$
-         cosi.label,cosi,$
-         bs.label,bs,$          ;; secondary eclipse parameters
-         taus.label,taus,$
-         t14s.label,t14s,$
-         tfwhms.label,tfwhms,$
-;         eclipsedepth36.label,eclipsedepth36,$
-;         eclipsedepth45.label,eclipsedepth45,$
-         eclipsedepth25.label,eclipsedepth25,$
-         eclipsedepth50.label,eclipsedepth50,$
-         eclipsedepth75.label,eclipsedepth75,$
-         rhop.label,rhop,$      ;; less useful parameters            
-         rpsun.label,rpsun,$
-         logP.label,logp,$  
-         loggp.label,loggp,$
-         lambda.label,lambda,$
-         lambdadeg.label,lambdadeg,$
-         lsinlambda.label,lsinlambda,$
-         lcoslambda.label,lcoslambda,$
-         safronov.label,safronov,$
-         fave.label,fave,$
-         tso.label,tso,$
-         ts.label,ts,$
-         te.label,te,$
-         te0.label,te0,$
-         tp.label,tp,$
-         ta.label,ta,$
-         td.label,td,$
-         phase.label,phase,$
-         vcve.label,vcve,$
-         chord.label,chord,$
-         sign.label,sign,$
-         sign2.label,sign2,$
-         ecosw.label,ecosw,$
-         esinw.label,esinw,$
-         secosw.label,secosw,$
-         sesinw.label,sesinw,$
-         qecosw.label,qecosw,$
-         qesinw.label,qesinw,$
-         msini.label,msini,$
-         msiniearth.label,msiniearth,$
-         q.label,q,$
-         arsun.label,arsun,$
-         dr.label,dr,$
-         pt.label,pt,$
-         ptg.label,ptg,$
-         ps.label,ps,$                 
-         psg.label,psg,$     
-         beam.label,beam,$     ;; other
+         tau.label,temporary(tau),$
+         t14.label,temporary(t14),$
+         tfwhm.label,temporary(tfwhm),$
+         b.label,temporary(b),$
+         cosi.label,temporary(cosi),$
+         bs.label,temporary(bs),$          ;; secondary eclipse parameters
+         taus.label,temporary(taus),$
+         t14s.label,temporary(t14s),$
+         tfwhms.label,temporary(tfwhms),$
+;         eclipsedepth36.label,temporary(eclipsedepth36),$
+;         eclipsedepth45.label,temporary(eclipsedepth45),$
+         eclipsedepth25.label,temporary(eclipsedepth25),$
+         eclipsedepth50.label,temporary(eclipsedepth50),$
+         eclipsedepth75.label,temporary(eclipsedepth75),$
+         rhop.label,temporary(rhop),$      ;; less useful parameters            
+         rpsun.label,temporary(rpsun),$
+         logP.label,temporary(logp),$  
+         loggp.label,temporary(loggp),$
+         lambda.label,temporary(lambda),$
+         lambdadeg.label,temporary(lambdadeg),$
+         lsinlambda.label,temporary(lsinlambda),$
+         lcoslambda.label,temporary(lcoslambda),$
+         safronov.label,temporary(safronov),$
+         fave.label,temporary(fave),$
+         tso.label,temporary(tso),$
+         ts.label,temporary(ts),$
+         te.label,temporary(te),$
+         te0.label,temporary(te0),$
+         tp.label,temporary(tp),$
+         ta.label,temporary(ta),$
+         td.label,temporary(td),$
+         phase.label,temporary(phase),$
+         vcve.label,temporary(vcve),$
+         chord.label,temporary(chord),$
+         sign.label,temporary(sign),$
+         sign2.label,temporary(sign2),$
+         ecosw.label,temporary(ecosw),$
+         esinw.label,temporary(esinw),$
+         secosw.label,temporary(secosw),$
+         sesinw.label,temporary(sesinw),$
+         qecosw.label,temporary(qecosw),$
+         qesinw.label,temporary(qesinw),$
+         msini.label,temporary(msini),$
+         msiniearth.label,temporary(msiniearth),$
+         q.label,temporary(q),$
+         arsun.label,temporary(arsun),$
+         dr.label,temporary(dr),$
+         pt.label,temporary(pt),$
+         ptg.label,temporary(ptg),$
+         ps.label,temporary(ps),$                 
+         psg.label,temporary(psg),$     
+         beam.label,temporary(beam),$     ;; other
          'starndx',0L,$
          'fittran',fittran[0],$        ;; booleans
          'fitrv',fitrv[0],$
@@ -2225,24 +2225,24 @@ planet = create_struct($
          'rootlabel','Planetary Parameters:',$
          'label','')
 
-specphot = create_struct(sperrscale.label, sperrscale,$   ;; spectrophotometry error scaling
-                         spzeropoint.label, spzeropoint,$ ;; spectrophotometry zero point error
+specphot = create_struct(sperrscale.label,temporary(sperrscale),$   ;; spectrophotometry error scaling
+                         spzeropoint.label,temporary(spzeropoint),$ ;; spectrophotometry zero point error
                          'rootlabel','Spectrophotometry Parameters:',$
                          'label', '')
 
 ;; for each wavelength
-band = create_struct(u1.label,u1,$ ;; linear limb darkening
-                     u2.label,u2,$ ;; quadratic limb darkening
-                     u3.label,u3,$ ;; 1st non-linear limb darkening
-                     u4.label,u4,$ ;; 2nd non-linear limb darkening
-                     thermal.label,thermal,$ ;; thermal emission
-                     ;dilute.label,dilute,$   ;; dilution
-                     reflect.label,reflect,$ ;; reflection
-                     phaseshift.label,phaseshift,$ ;; reflection
-                     ellipsoidal.label,ellipsoidal,$
-                     eclipsedepth.label,eclipsedepth,$
-                     mag.label,mag,$
-                     phottobary.label,phottobary,$
+band = create_struct(u1.label,temporary(u1),$ ;; linear limb darkening
+                     u2.label,temporary(u2),$ ;; quadratic limb darkening
+                     u3.label,temporary(u3),$ ;; 1st non-linear limb darkening
+                     u4.label,temporary(u4),$ ;; 2nd non-linear limb darkening
+                     thermal.label,temporary(thermal),$ ;; thermal emission
+                     ;dilute.label,temporary(dilute),$   ;; dilution
+                     reflect.label,temporary(reflect),$ ;; reflection
+                     phaseshift.label,temporary(phaseshift),$ ;; reflection
+                     ellipsoidal.label,temporary(ellipsoidal),$
+                     eclipsedepth.label,temporary(eclipsedepth),$
+                     mag.label,temporary(mag),$
+                     phottobary.label,temporary(phottobary),$
                      'starndx',0L,$
                      'name','',$
                      'latex','',$
@@ -2250,9 +2250,9 @@ band = create_struct(u1.label,u1,$ ;; linear limb darkening
                      'label','')
 
 ;; for each telescope
-telescope = create_struct(gamma.label,gamma,$
-                          jitter.label,jitter,$
-                          jittervar.label,jittervar,$
+telescope = create_struct(gamma.label,temporary(gamma),$
+                          jitter.label,temporary(jitter),$
+                          jittervar.label,temporary(jittervar),$
                           'rvptrs', ptr_new(),$
                           'detrend',ptr_new(/allocate_heap),$ ;; array of detrending parameters
                           'name','',$
@@ -2267,15 +2267,15 @@ if ntel le 0 then begin
 endif
 
 ;; for each transit
-transit = create_struct(variance.label,variance,$ ;; jitter
-                        sigma_r.label,sigma_r,$ ;; Red noise
-                        ttv.label,ttv,$           ;; Transit Timing Variation
-                        tiv.label,tiv,$ ;; Transit inclination variation
-                        tdeltav.label,tdeltav,$ ;; Transit depth variation
-                        dilute.label, dilute, $ ;; Transit depth variation
-                        rampexp.label, rampexp, $
-                        rampamp.label, rampamp, $
-                        f0.label,f0,$ ;; normalization
+transit = create_struct(variance.label,temporary(variance),$ ;; jitter
+                        sigma_r.label,temporary(sigma_r),$ ;; Red noise
+                        ttv.label,temporary(ttv),$           ;; Transit Timing Variation
+                        tiv.label,temporary(tiv),$ ;; Transit inclination variation
+                        tdeltav.label,temporary(tdeltav),$ ;; Transit depth variation
+                        dilute.label,temporary(dilute),$ ;; Transit depth variation
+                        rampexp.label,temporary(rampexp),$
+                        rampamp.label,temporary(rampamp),$
+                        f0.label,temporary(f0),$ ;; normalization
                         'claret', 0B,$
                         'transitptrs',ptr_new(),$ ;; Data
                         'detrend',ptr_new(/allocate_heap),$ ;; array of detrending parameters
@@ -2297,16 +2297,16 @@ transit = create_struct(variance.label,variance,$ ;; jitter
 doptom = create_struct('dtptrs',ptr_new(),$
                        'rootlabel','Doppler Tomography Parameters:',$
                        'label','',$
-                       dtscale.label,dtscale) ;,$
+                       dtscale.label,temporary(dtscale)) ;,$
 ;                       'lambdarange',0,$
 ;                       'tel','',$
 ;                       'night','',$
 ;                       'planetndx')
 
 astrom = create_struct('astromptrs',ptr_new(),$
-                       astromscale.label,astromscale,$
-                       raoffset.label,raoffset,$
-                       decoffset.label,decoffset,$
+                       astromscale.label,temporary(astromscale),$
+                       raoffset.label,temporary(raoffset),$
+                       decoffset.label,temporary(decoffset),$
                        'starndx',0L,$
                        'bandndx',0L,$
                        'rootlabel','Astrometry Parameters:',$
@@ -2315,14 +2315,14 @@ astrom = create_struct('astromptrs',ptr_new(),$
 
 ;; a stellar system has a star, planets, observed bands, observed
 ;; transits, priors, and global options
-ss = create_struct('star',replicate(star,nstars>1),$
-                   'planet',replicate(planet,nplanets > 1),$
-                   'band',replicate(band,nband > 1),$
-                   'telescope',replicate(telescope,ntel > 1),$
-                   'transit',replicate(transit,ntran > 1),$
-                   'doptom',replicate(doptom,ndt>1),$
-                   'astrom',replicate(astrom,nastrom>1),$
-                   'specphot',replicate(specphot,nspecfiles>1),$
+ss = create_struct('star',replicate(temporary(star),nstars>1),$
+                   'planet',replicate(temporary(planet),nplanets > 1),$
+                   'band',replicate(temporary(band),nband > 1),$
+                   'telescope',replicate(temporary(telescope),ntel > 1),$
+                   'transit',replicate(temporary(transit),ntran > 1),$
+                   'doptom',replicate(temporary(doptom),ndt>1),$
+                   'astrom',replicate(temporary(astrom),nastrom>1),$
+                   'specphot',replicate(temporary(specphot),nspecfiles>1),$
                    'epochs',dblarr(ntran>1,nplanets>1),$
                    'constants',constants,$
                    'tofit',ptr_new(1),$

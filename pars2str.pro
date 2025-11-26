@@ -39,11 +39,17 @@ pro pars2str, pars, str, best=best
         if tofit[3,i] eq -1 then begin
            if not str.(tofit[0,i])[tofit[1,i]].(tofit[2,i]).fit then message, errmsg
            if keyword_set(best) then str.(tofit[0,i])[tofit[1,i]].(tofit[2,i]).best = transpose(pars[i,*]) $
-           else str.(tofit[0,i])[tofit[1,i]].(tofit[2,i]).value = transpose(pars[i,*])
+           else begin 
+             _tmp = pars[i,*]
+             str.(tofit[0,i])[tofit[1,i]].(tofit[2,i]).value = reform(temporary(_tmp))
+           endelse
         endif else begin
            if not  (*str.(tofit[0,i])[tofit[1,i]].(tofit[2,i])).(tofit[3,i])[tofit[4,i]].fit then message, errmsg
            if keyword_set(best) then (*str.(tofit[0,i])[tofit[1,i]].(tofit[2,i])).(tofit[3,i])[tofit[4,i]].best = transpose(pars[i,*]) $
-           else (*str.(tofit[0,i])[tofit[1,i]].(tofit[2,i])).(tofit[3,i])[tofit[4,i]].value = transpose(pars[i,*])
+           else begin
+             _tmp = pars[i,*]
+             (*str.(tofit[0,i])[tofit[1,i]].(tofit[2,i])).(tofit[3,i])[tofit[4,i]].value = reform(temporary(_tmp))
+           endelse
         endelse
      endfor
   endelse     
