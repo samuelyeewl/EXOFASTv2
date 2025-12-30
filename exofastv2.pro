@@ -1436,9 +1436,9 @@ if n_elements(maxsteps) eq 0 then begin
    endif
 endif 
 
-memrequired = double(ss.nchains)*double(maxsteps)*npars*8d0/(1024d0^3)
+memrequired = double(ss.nchains)*double(maxsteps)*ss.nallpars*8d0/(1024d0^3)
 printandlog, 'Fit will require ' + strtrim(memrequired,2) + ' GB of RAM for the final structure', logname
-if memrequired gt 16d0 then begin
+if memrequired gt 32d0 then begin
    printandlog, 'WARNING: this likely exceeds your available RAM and may crash after the end of a very long run. You likely want to reduce MAXSTEPS and increase NTHIN by the same factor. If you would like to proceed anyway, type ".con" to continue', logname
    if ~lmgr(/vm) then stop
 endif
@@ -1668,9 +1668,6 @@ if not keyword_set(bestonly) then begin
       printandlog, 'MCMC Failed to find a stepping scale. This usually means one or more parameters are unconstrained by the data or priors.', logname
    endif
 
-   mem = (MEMORY(/HIGHWATER)*IDLUNIT.byte).to('GB')
-   printandlog, 'Maximum memory used by MCMC was ' + (strtrim(mem.quantity, 2)).substring(0, 5) + ' GB', logname
-
    bad = where(tz lt mintz or gelmanrubin gt maxgr,nbad)
    if bad[0] ne -1 then begin
       printandlog, 'WARNING: The Gelman-Rubin statistic indicates ' + $
@@ -1685,7 +1682,7 @@ if not keyword_set(bestonly) then begin
    npars = sz[1]
    nsteps = sz[2]
    nchains = sz[3]
-   pars = reform(pars,npars,nsteps*nchains)
+   pars = reform(temporary(pars),npars,nsteps*nchains)
    chi2 = reform(chi2,nsteps*nchains)
    minchi2 = min(chi2,bestndx)
    
@@ -1710,9 +1707,6 @@ endif else begin
    bestndx = 0
 endelse
 
-mem = (MEMORY(/HIGHWATER)*IDLUNIT.byte).to('GB')
-printandlog, 'Maximum memory used after synthesizing was ' + (strtrim(mem.quantity, 2)).substring(0, 5) + ' GB', logname
-
 ;; generate the model fit from the best MCMC values, not AMOEBA
 bestamoeba = best
 best = pars[*,bestndx]
@@ -1721,6 +1715,13 @@ ss.verbose = 1
 bestchi2 = call_function(chi2func,best,psname=modelfile, $
                          modelrv=modelrv, modelflux=modelflux)
 ss.verbose = keyword_set(verbose)
+
+;; save pars to file
+temp_pars_file = GETENV('IDL_TMPDIR') + path_sep() + basename + '_temp_pars.dat'
+openw, lun, temp_pars_file, /get_lun
+for i = 0L, npars-1 do writeu, lun, pars[i,*]
+free_lun, lun
+pars = 0
 
 ;; make a new stellar system structure with only fitted and derived
 ;; parameters, populated by the pars array
@@ -1779,7 +1780,8 @@ mcmcss = mkss(priorfile=priorfile, $
               /silent, $
               chi2func=chi2func, $
               logname=logname, $
-              best=best)
+              best=best, $
+              /noloadss)
 
 if (size(mcmcss))[2] ne 8 then return
 
@@ -1788,13 +1790,14 @@ mcmcss.burnndx = burnndx
 *(mcmcss.goodchains) = goodchains
 *(mcmcss.chi2) = chi2
 
-mem = (MEMORY(/HIGHWATER)*IDLUNIT.byte).to('GB')
-printandlog, 'Maximum memory used after mkss was ' + (strtrim(mem.quantity, 2)).substring(0, 5) + ' GB', logname
+;; read pars from file
+openr, lun, temp_pars_file, /get_lun
+av = assoc(lun, dblarr(nsteps*nchains))
+pars2str, av, mcmcss, /AS_ASSOC
+av = 0
+free_lun, lun
 
-pars2str, pars, mcmcss
-
-mem = (MEMORY(/HIGHWATER)*IDLUNIT.byte).to('GB')
-printandlog, 'Maximum memory used after pars2str was ' + (strtrim(mem.quantity, 2)).substring(0, 5) + ' GB', logname
+;; pars2str, pars, mcmcss
 
 ;; populate residuals for the mcmcss file
 for i=0L, mcmcss.ntran-1 do $
@@ -1804,9 +1807,6 @@ for i=0L, mcmcss.ntel-1 do $
    
 ;; derive all parameters
 derivepars, mcmcss, logname=logname
-
-mem = (MEMORY(/HIGHWATER)*IDLUNIT.byte).to('GB')
-printandlog, 'Maximum memory used after remaking structure was ' + (strtrim(mem.quantity, 2)).substring(0, 5) + ' GB', logname
 
 spawn, 'git -C $EXOFAST_PATH rev-parse --short HEAD', output, stderr
 if output[0] ne '' then versiontxt = ", created using EXOFASTv2 commit number " + output[0] $

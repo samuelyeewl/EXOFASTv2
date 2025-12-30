@@ -10,7 +10,7 @@
 ;    pars2str(pars,str)
 ;-
 
-pro pars2str, pars, str, best=best
+pro pars2str, pars, str, best=best, AS_ASSOC=as_assoc
 
   tofit = *(str.tofit)
   npars = n_elements(tofit[0,*])
@@ -40,14 +40,22 @@ pro pars2str, pars, str, best=best
            if not str.(tofit[0,i])[tofit[1,i]].(tofit[2,i]).fit then message, errmsg
            if keyword_set(best) then str.(tofit[0,i])[tofit[1,i]].(tofit[2,i]).best = transpose(pars[i,*]) $
            else begin 
-             _tmp = pars[i,*]
+             if keyword_set(as_assoc) then begin
+                 _tmp = pars[i]
+             endif else begin
+                 _tmp = pars[i,*]
+             endelse
              str.(tofit[0,i])[tofit[1,i]].(tofit[2,i]).value = reform(temporary(_tmp))
            endelse
         endif else begin
            if not  (*str.(tofit[0,i])[tofit[1,i]].(tofit[2,i])).(tofit[3,i])[tofit[4,i]].fit then message, errmsg
            if keyword_set(best) then (*str.(tofit[0,i])[tofit[1,i]].(tofit[2,i])).(tofit[3,i])[tofit[4,i]].best = transpose(pars[i,*]) $
            else begin
-             _tmp = pars[i,*]
+             if keyword_set(as_assoc) then begin
+                 _tmp = pars[i]
+             endif else begin
+                 _tmp = pars[i,*]
+             endelse
              (*str.(tofit[0,i])[tofit[1,i]].(tofit[2,i])).(tofit[3,i])[tofit[4,i]].value = reform(temporary(_tmp))
            endelse
         endelse

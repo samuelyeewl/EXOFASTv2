@@ -88,7 +88,8 @@ function mkss, priorfile=priorfile, $
                silent=silent, $
                chi2func=chi2func, $
                logname=logname, $
-               best=best
+               best=best, $
+               noloadss=noloadss
 
 if n_elements(transitrange) eq 0 then transitrange=dblarr(6)+!values.d_nan
 if n_elements(rvrange) eq 0 then rvrange=dblarr(6) + !values.d_nan
@@ -2294,6 +2295,7 @@ transit = create_struct(variance.label,temporary(variance),$ ;; jitter
                         'fitramp',0B,$
                         'label','') 
 
+;; for each transit
 doptom = create_struct('dtptrs',ptr_new(),$
                        'rootlabel','Doppler Tomography Parameters:',$
                        'label','',$
@@ -2363,6 +2365,7 @@ ss = create_struct('star',replicate(temporary(star),nstars>1),$
                    'alloworbitcrossing', keyword_set(alloworbitcrossing),$
                    'nsteps',nsteps,$                   
                    'npars',0L,$
+                   'nallpars',0L,$
                    'burnndx',0L,$
                    'nchains',1L,$
                    'goodchains',ptr_new(1),$
@@ -3348,6 +3351,7 @@ for i=0L, n_tags(ss)-1 do begin
                         if tag_exist((*(ss.(i)[j].(k))).(l)[m],'fit') then begin
                            if (*(ss.(i)[j].(k))).(l)[m].fit then tofit = [[tofit],[i,j,k,l,m]]
                            if (*(ss.(i)[j].(k))).(l)[m].fit or (*(ss.(i)[j].(k))).(l)[m].derive then ss.npars++
+                           ss.nallpars++
                         endif
                      endfor
                   endif
@@ -3358,6 +3362,7 @@ for i=0L, n_tags(ss)-1 do begin
             if tag_exist(ss.(i)[j].(k),'fit') then begin
                if ss.(i)[j].(k).fit then tofit = [[tofit],[i,j,k,-1,-1]]
                if ss.(i)[j].(k).fit or ss.(i)[j].(k).derive then ss.npars++
+               ss.nallpars++
             endif
          endif
       endfor
@@ -3402,7 +3407,9 @@ endelse
 
 ;; load stellar structure into common block
 ;; must do it here because threads can't pass structures
-if n_elements(chi2func) eq 1 then junk = call_function(chi2func, /loadss, ss0=ss)
+if ~keyword_set(noloadss) then begin
+    if n_elements(chi2func) eq 1 then junk = call_function(chi2func, /loadss, ss0=ss)
+endif
 
 if (ss.mistsedfile ne '' or ss.fluxfile ne '') and $
    (nastrom eq 0 and ~finite(ss.star[0].parallax.priorwidth)) then  begin
@@ -3414,6 +3421,6 @@ ss.ndata += 3*total(ss.yy)
 ss.ndata += 3*total(ss.parsec)
 ss.ndata += 2*total(ss.torres)
 
-return, ss
+return, temporary(ss)
 
 end
