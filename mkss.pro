@@ -3376,7 +3376,7 @@ ss.nchains = n_elements((*ss.tofit)[0,*])*2L
 if arg_present(best) then pars2str, best, ss, /best
 
 ;; don't do these when creating the MCMC structure
-if n_elements(ss.star[0].mstar.value) eq 1 then begin
+if n_elements(ss.star[0].mstar.value) eq 1 and ~keyword_set(noloadss) then begin
 
    ;; derive all step parameters
    if not pars2step(ss) then begin
