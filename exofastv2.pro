@@ -1694,6 +1694,9 @@ if not keyword_set(bestonly) then begin
    aic = 2d0*nfit + minchi2
    printandlog, 'NDATA = ' + strtrim(ss.ndata,2),logname
    printandlog, 'NFIT = ' + strtrim(nfit,2),logname
+   printandlog, 'NPARS = ' + strtrim(npars,2),logname
+   printandlog, 'NSTEPS = ' + strtrim(nsteps,2),logname
+   printandlog, 'NCHAINS = ' + strtrim(nchains,2),logname
    printandlog, 'BIC = ' + strtrim(bic,2),logname
    printandlog, 'AIC = ' + strtrim(aic,2),logname
    if minchi2 lt bestchi2 then begin
