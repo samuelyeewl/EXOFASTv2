@@ -14,19 +14,21 @@ ntags = n_tags(structure)
 for i=0L, ntags-1 do begin
 
    ;; if it's not a pointer or structure, skip it   
-   sz = size((structure.(i)))
+   field_val = structure.(i)
+   sz = size(field_val)
    if sz[1] ne 10 and sz[2] ne 8 then continue 
 
-   for j=0L, n_elements(structure.(i))-1 do begin
+   for j=0L, n_elements(field_val)-1 do begin
 
-      sz = size((structure.(i))[j])
+      child_val = (field_val)[j]
+      sz = size(child_val)
 
       ;; if it's a pointer, recursively search for more parameters
       if sz[1] eq 10 then begin
-         if (structure.(i))[j] eq !null then continue
+         if child_val eq !null then continue
          if n_elements(depth) eq 0 then newdepth=[i,j]
          if n_elements(depth) eq 2 then newdepth=[depth,i,j]
-         mapline = findvariable(*((structure.(i))[j]), varname, depth=newdepth, /silent, count=count)
+         mapline = findvariable(*(child_val), varname, depth=newdepth, /silent, count=count)
          if mapline[0] ne -1 then return, mapline
          continue
       endif
@@ -36,10 +38,10 @@ for i=0L, ntags-1 do begin
       
       ;; it's a structure, but not a parameter structure,
       ;; recursively search for parameters
-      if ~tag_exist((structure.(i))[j], tagname, /top_level) then begin
+      if ~tag_exist((field_val)[j], tagname, /top_level) then begin
          if n_elements(depth) eq 0 then newdepth=[i,j]
          if n_elements(depth) eq 2 then newdepth=[depth,i,j]
-         mapline = findvariable((structure.(i))[j], varname, depth=newdepth, /silent, count=count)
+         mapline = findvariable(child_val, varname, depth=newdepth, /silent, count=count)
          if mapline[0] ne -1 then return, mapline
          continue ;; didn't find it in stucture.(i))[j], keep searching the primary structure
       endif
@@ -47,7 +49,7 @@ for i=0L, ntags-1 do begin
       ;if varnames[0] eq 'C1' and strupcase((structure.(i))[j].label) eq 'C1' then stop
 
       ;; its label doesn't match varname, keep searching
-      if strupcase((structure.(i))[j].label) ne varnames[0] then continue
+      if strupcase(child_val.label) ne varnames[0] then continue
      
       ;; add to the depth of the map
       if n_elements(depth) eq 0 then depth = [i,j] $
